@@ -55,11 +55,6 @@ sass = <<-SASS
 @import 'bourbon'
 SASS
 
-# TODO:
-# update application.rb
-# selenium
-# create staging.rb
-
 remove_file 'app/assets/stylesheets/application.css'
 create_file 'app/assets/stylesheets/application.css.sass', sass
 
@@ -76,11 +71,14 @@ end
 
 run 'mkdir spec/support'
 
+
 # factory girl
 copy_file File.expand_path('../spec/support/factory_girl.rb', __FILE__), 'spec/support/factory_girl.rb'
 
+
 # database cleaner
 copy_file File.expand_path('../spec/support/database_cleaner.rb', __FILE__), 'spec/support/database_cleaner.rb'
+
 
 # rspec
 rspec = <<-RSPEC
@@ -91,6 +89,15 @@ Dir[File.expand_path('../support/**/*.rb', __FILE__)].each { |f| require f }
 RSPEC
 
 prepend_to_file 'spec/spec_helper.rb', rspec
+
+insert_into_file 'spec/rails_helper.rb', after: "require 'rspec/rails'\n" do <<-RUBY
+require "capybara/rails"
+require "capybara/rspec"
+
+Capybara.javascript_driver = :selenium
+
+RUBY
+end
 
 
 # letter opener
@@ -119,8 +126,30 @@ append_to_file 'config/database.yml', staging
 run 'cp config/database.yml config/database.yml.sample'
 append_to_file '.gitignore', 'config/database.yml'
 
-rake 'db:setup'
-rake 'db:test:prepar'
+# update application.rb
+application do <<-RUBY
+  config.sass_preferred_syntax = :sass
+
+  config.generators do |g|
+    g.test_framework :rspec,  fixtures:         true,
+                              view_specs:       false,
+                              helper_specs:     false,
+                              routing_specs:    false,
+                              controller_specs: true,
+                              request_specs:    true,
+                              model_specs:      true
+
+    g.fixture_replacement :factory_girl, dir: 'spec/factories'
+
+    g.stylesheets = false
+    g.javascripts = false
+  end
+RUBY
+end
+
+rake 'db:create'
+rake 'db:migrate'
+rake 'db:test:prepair'
 
 git :init
 git add: '.'
