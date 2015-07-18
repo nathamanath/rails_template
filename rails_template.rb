@@ -42,6 +42,8 @@ run 'echo ".env" >> .gitignore'
 run 'touch .env.sample'
 run 'touch .env'
 
+run 'rm -r test'
+
 # Nice README
 run 'rm README.rdoc'
 run "echo '# #{@app_name.titleize}\n' > README.md"
