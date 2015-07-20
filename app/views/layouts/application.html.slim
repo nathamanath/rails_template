@@ -1,0 +1,21 @@
+doctype html
+
+html
+  head
+    meta name="viewport" content="width=device-width, initial-scale=1; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no;"
+
+    title
+      = "#{@page_title} | " if @page_title
+      | DEFAULT_TITLE
+
+    = stylesheet_link_tag 'application', media: 'all'
+    = csrf_meta_tags
+
+  body
+    - if flash.any?
+      = content_tag 'ul', class: 'flash-notifications' do
+        - flash.each do |name, message|
+          = content_tag 'li', message, class: "is-#{name}"
+
+    = yield
+

@@ -52,20 +52,21 @@ run 'bundle:install'
 
 generate 'rspec:install'
 
+# Layout
+layout_dir = 'app/views/layouts/'
+layout_path = "#{layout_dir}application.html.slim"
+
+remove_file "#{layout_dir}application.html.erb"
+copy_file File.expand_path("../#{layout_path}", __FILE__), layout_path
+gsub_file layout_path, /DEFAULT_TITLE/, @app_name.titleize
+
 # SASS
 remove_file 'app/assets/stylesheets/application.css'
 directory File.expand_path('../app/assets/stylesheets', __FILE__), 'app/assets/stylesheets'
+directory File.expand_path('../vendor', __FILE__), 'vendor'
 
-run 'mkdir spec/support'
-
-
-# factory girl
-copy_file File.expand_path('../spec/support/factory_girl.rb', __FILE__), 'spec/support/factory_girl.rb'
-
-
-# database cleaner
-copy_file File.expand_path('../spec/support/database_cleaner.rb', __FILE__), 'spec/support/database_cleaner.rb'
-
+# JS
+gsub_file 'app/assets/javascripts/application.js', /^.*jquery.*\n/, ''
 
 # rspec
 rspec = <<-RSPEC
@@ -85,6 +86,13 @@ Capybara.javascript_driver = :selenium
 
 RUBY
 end
+run 'mkdir spec/support'
+
+# factory girl
+copy_file File.expand_path('../spec/support/factory_girl.rb', __FILE__), 'spec/support/factory_girl.rb'
+
+# database cleaner
+copy_file File.expand_path('../spec/support/database_cleaner.rb', __FILE__), 'spec/support/database_cleaner.rb'
 
 
 # letter opener
@@ -118,18 +126,19 @@ application do <<-RUBY
   config.sass_preferred_syntax = :sass
 
   config.generators do |g|
-    g.test_framework :rspec,  fixtures:         true,
-                              view_specs:       false,
-                              helper_specs:     false,
-                              routing_specs:    false,
-                              controller_specs: true,
-                              request_specs:    true,
-                              model_specs:      true
+    g.test_framework :rspec, fixtures: true,
+      view_specs: false,
+      helper_specs: false,
+      routing_specs: false,
+      controller_specs: true,
+      request_specs: false,
+      model_specs: true
 
     g.fixture_replacement :factory_girl, dir: 'spec/factories'
 
     g.stylesheets = false
     g.javascripts = false
+    g.helpers = false
   end
 RUBY
 end
