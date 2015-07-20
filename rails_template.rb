@@ -53,23 +53,8 @@ run 'bundle:install'
 generate 'rspec:install'
 
 # SASS
-sass = <<-SASS
-@import 'bourbon'
-SASS
-
 remove_file 'app/assets/stylesheets/application.css'
-create_file 'app/assets/stylesheets/application.css.sass', sass
-
-# sass directories
-sass_paths = %W{base components helpers ie layout pages themes vendor}
-
-sass_paths.each do |path|
-  file = "#{path}/#{path}"
-
-  run "mkdir app/assets/stylesheets/#{path}"
-  run "touch app/assets/stylesheets/#{file}.sass"
-  run %Q{ echo "@import '#{file}'" >> app/assets/stylesheets/application.css.sass }
-end
+directory File.expand_path('../app/assets/stylesheets', __FILE__), 'app/assets/stylesheets'
 
 run 'mkdir spec/support'
 
