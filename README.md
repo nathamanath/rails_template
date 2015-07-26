@@ -26,4 +26,6 @@ A rails template to save time configuring rails at the start of every project.
 * rake task to update vendored assets
 * conditional ie classes
 * modernizr
+* a smoke test
+* fontawesome?
 

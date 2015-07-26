@@ -107,7 +107,7 @@ gsub_file 'config/environments/staging.rb', /:debug/, ':warn'
 
 capitalized = @app_name.upcase
 
-staging = <<-YML
+database = <<-YML
 
 staging:
   <<: *default
@@ -117,7 +117,15 @@ staging:
 
 YML
 
-append_to_file 'config/database.yml', staging
+secrets = <<-YML
+
+staging:
+  secret_key_base: <%= ENV["SECRET_KEY_BASE"] %>
+
+YML
+
+append_to_file 'config/database.yml', database
+append_to_file 'config/secrets.yml', secrets
 run 'cp config/database.yml config/database.yml.sample'
 append_to_file '.gitignore', 'config/database.yml'
 
