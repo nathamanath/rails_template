@@ -1,3 +1,16 @@
+# Prompt user to select db
+databases = {
+  'mysql': 'mysql2',
+  'pg': 'pg',
+  'sqlite': 'sqlite'
+}
+
+while !databases.map{ |k, v| k }.include?(db) do
+  db = ask("Which database? type 'mysql', 'sqlite', or 'pg'?")
+end
+
+
+# gems
 remove_file 'Gemfile'
 run 'touch Gemfile'
 
@@ -5,7 +18,7 @@ add_source 'https://rubygems.org'
 
 # Add some gems
 gem 'rails'
-gem 'pg'
+gem databases[db]
 gem 'sass-rails'
 gem 'uglifier'
 gem 'puma'
