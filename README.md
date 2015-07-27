@@ -24,8 +24,6 @@ A rails template to save time configuring rails at the start of every project.
 * nicer management of Gemfile
 * pick a database. Currently postgres only
 * rake task to update vendored assets
-* conditional ie classes
 * modernizr
 * a smoke test
-* fontawesome?
 
