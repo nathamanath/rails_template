@@ -13,9 +13,12 @@ A rails template to save time configuring rails at the start of every project.
 * Slim templating
 * Setup a staging environment
 * Setup generators in application.rb
-* setup database
-* init git repo
-* markdown readme
+* Setup database
+* Init git repo
+* Markdown readme
+* Static pages controller
+* A smoke test
+* Modernizr gem in development (make a custom build for production)
 
 ## Development
 
@@ -24,6 +27,4 @@ A rails template to save time configuring rails at the start of every project.
 * nicer management of Gemfile
 * pick a database. Currently postgres only
 * rake task to update vendored assets
-* modernizr
-* a smoke test
 
