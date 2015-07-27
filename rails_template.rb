@@ -121,6 +121,7 @@ end
 
 
 after_bundle do
+  run 'spring stop'
 
   generate 'rspec:install'
 
@@ -163,7 +164,7 @@ after_bundle do
   rake 'db:test:prepare'
 
   # Static controller
-  run 'rails generate controller static index'
+  generate 'controller static index'
   route "root 'static#index'"
 
   # Smoke test
@@ -173,5 +174,6 @@ after_bundle do
   git add: '.'
   git commit: '-a -m initial commit'
   git checkout: '-b develop'
+
 end
 
