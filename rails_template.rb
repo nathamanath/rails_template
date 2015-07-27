@@ -130,6 +130,7 @@ run 'cp config/database.yml config/database.yml.sample'
 append_to_file '.gitignore', 'config/database.yml'
 
 # update application.rb
+# configure generators
 application do <<-RUBY
   config.sass_preferred_syntax = :sass
 
