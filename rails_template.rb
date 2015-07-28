@@ -81,7 +81,7 @@ run 'cp .env .env.sample'
 
 # Use environment variables to make database.yml portable
 remove_file 'config/database.yml'
-copy_file File.expand_path('../config/database.pg.yml', __FILE__), 'config/database.yml'
+copy_file File.expand_path('../config/database.yml', __FILE__), 'config/database.yml'
 gsub_file 'config/database.yml', 'ADAPTER', databases[db][:adapter]
 
 gsub_file 'config/database.yml', /.*unicode\n/, '' unless db == :pg
