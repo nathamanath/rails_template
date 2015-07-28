@@ -1,14 +1,23 @@
 # Prompt user to select db
 databases = {
-  'mysql': 'mysql2',
-  'pg': 'pg',
-  'sqlite': 'sqlite'
+  mysql: {
+    gem: 'mysql2',
+    adapter: 'mysql'
+  },
+  pg: {
+    gem: 'pg',
+    adapter: 'postgresql'
+  },
+  sqlite: {
+    gem: 'sqlite3',
+    adapter: 'sqlite'
+  }
 }
 
+db = ''
 while !databases.map{ |k, v| k }.include?(db) do
-  db = ask("Which database? type 'mysql', 'sqlite', or 'pg'?")
+  db = ask("Which database? type 'mysql', 'sqlite', or 'pg'?").to_sym
 end
-
 
 # gems
 remove_file 'Gemfile'
@@ -18,7 +27,7 @@ add_source 'https://rubygems.org'
 
 # Add some gems
 gem 'rails'
-gem databases[db]
+gem databases[db][:gem]
 gem 'sass-rails'
 gem 'uglifier'
 gem 'puma'
@@ -54,10 +63,30 @@ run %Q{ sed -i "2i ruby '#{version}'" Gemfile }
 
 # Environment variables
 run 'echo ".env" >> .gitignore'
-run 'touch .env.sample'
 run 'touch .env'
 
+database_name = (db == :sqlite)? 'db/development.sqlite3' : "#{@app_name.underscore}_development"
+
+env = <<-ENV
+DATABASE_NAME=#{database_name}_development
+DATABASE_USERNAME=
+DATABASE_PASSWORD=
+
+ENV
+
+append_to_file '.env', env
+
+run 'cp .env .env.sample'
+
+
+# Use environment variables to make database.yml portable
+remove_file 'config/database.yml'
+copy_file File.expand_path('../config/database.pg.yml', __FILE__), 'config/database.yml'
+gsub_file 'config/database.yml', 'ADAPTER', databases[db][:adapter]
+
+# Tidy up unwanted files
 run 'rm -r test'
+
 
 # Nice README
 run 'rm README.rdoc'
@@ -72,6 +101,7 @@ remove_file "#{layout_dir}application.html.erb"
 copy_file File.expand_path("../#{layout_path}", __FILE__), layout_path
 gsub_file layout_path, /DEFAULT_TITLE/, @app_name.titleize
 
+
 # SASS
 remove_file 'app/assets/stylesheets/application.css'
 directory File.expand_path('../app/assets/stylesheets', __FILE__), 'app/assets/stylesheets'
@@ -85,18 +115,6 @@ gsub_file 'app/assets/javascripts/application.js', /^.*jquery.*\n/, ''
 run 'cp config/environments/production.rb config/environments/staging.rb'
 gsub_file 'config/environments/staging.rb', /:debug/, ':warn'
 
-capitalized = @app_name.upcase
-
-database = <<-YML
-
-staging:
-  <<: *default
-  database: #{@app_name}_staging
-  username: <%= ENV['#{capitalized}_DATABASE_USERNAME'] %>
-  password: <%= ENV['#{capitalized}_DATABASE_PASSWORD'] %>
-
-YML
-
 secrets = <<-YML
 
 staging:
@@ -104,10 +122,8 @@ staging:
 
 YML
 
-append_to_file 'config/database.yml', database
 append_to_file 'config/secrets.yml', secrets
-run 'cp config/database.yml config/database.yml.sample'
-append_to_file '.gitignore', 'config/database.yml'
+
 
 # update application.rb
 # configure generators
