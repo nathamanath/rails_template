@@ -2,7 +2,7 @@
 databases = {
   mysql: {
     gem: 'mysql2',
-    adapter: 'mysql'
+    adapter: 'mysql2'
   },
   pg: {
     gem: 'pg',
@@ -10,7 +10,7 @@ databases = {
   },
   sqlite: {
     gem: 'sqlite3',
-    adapter: 'sqlite'
+    adapter: 'sqlite3'
   }
 }
 
@@ -83,6 +83,8 @@ run 'cp .env .env.sample'
 remove_file 'config/database.yml'
 copy_file File.expand_path('../config/database.pg.yml', __FILE__), 'config/database.yml'
 gsub_file 'config/database.yml', 'ADAPTER', databases[db][:adapter]
+
+gsub_file 'config/database.yml', /.*unicode\n/, '' unless db == :pg
 
 # Tidy up unwanted files
 run 'rm -r test'
