@@ -14,6 +14,8 @@ databases = {
   }
 }
 
+app_title = @app_name.titleize
+
 db = ''
 while !databases.map{ |k, v| k }.include?(db) do
   db = ask("Which database? type 'mysql', 'sqlite', or 'pg'?").to_sym
@@ -71,7 +73,7 @@ env = <<-ENV
 DATABASE_NAME=#{database_name}_development
 DATABASE_USERNAME=
 DATABASE_PASSWORD=
-
+ANALYTICS_TRACKING_CODE=
 ENV
 
 append_to_file '.env', env
@@ -92,7 +94,7 @@ run 'rm -r test'
 
 # Nice README
 run 'rm README.rdoc'
-run "echo '# #{@app_name.titleize}\n' > README.md"
+run "echo '# #{app_title}\n' > README.md"
 
 
 # Layout
@@ -100,8 +102,9 @@ layout_dir = 'app/views/layouts/'
 layout_path = "#{layout_dir}application.html.slim"
 
 remove_file "#{layout_dir}application.html.erb"
-copy_file File.expand_path("../#{layout_path}", __FILE__), layout_path
-gsub_file layout_path, /DEFAULT_TITLE/, @app_name.titleize
+# copy_file File.expand_path("../#{layout_path}", __FILE__), layout_path
+directory File.expand_path("../#{layout_dir}", __FILE__), layout_dir
+gsub_file layout_path, /DEFAULT_TITLE/, app_title
 
 
 # SASS
@@ -121,7 +124,6 @@ secrets = <<-YML
 
 staging:
   secret_key_base: <%= ENV["SECRET_KEY_BASE"] %>
-
 YML
 
 append_to_file 'config/secrets.yml', secrets
@@ -172,7 +174,6 @@ after_bundle do
   require "capybara/rspec"
 
   Capybara.javascript_driver = :selenium
-
   RUBY
   end
   run 'mkdir spec/support'
@@ -207,4 +208,3 @@ after_bundle do
   git checkout: '-b develop'
 
 end
-

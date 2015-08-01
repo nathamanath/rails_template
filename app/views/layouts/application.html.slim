@@ -1,17 +1,22 @@
 doctype html
 
+/[if lt IE 9]
+  | <html class="lt-ie9 no-js">
 /[if IE 9]
-  | <html class="ie9">
+  | <html class="ie9 no-js">
 | <!--[if (gte IE 9)|!(IE)]<!-->
 html.no-js
   | <!--<![endif]-->
 
   head
-    meta name="viewport" content="width=device-width, initial-scale=1; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no;"
+    meta charset="utf-8"
 
     title
       = "#{@page_title} | " if @page_title
       | DEFAULT_TITLE
+
+    meta name="description" content=""
+    meta name="viewport" content="width=device-width, initial-scale=1; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no;"
 
     = stylesheet_link_tag 'application', media: 'all'
     = javascript_include_tag :modernizr
@@ -27,3 +32,4 @@ html.no-js
 
     = javascript_include_tag 'application'
 
+    = render 'analytics' if Rails.env.production? && !ENV[ANALYTICS_TRACKING_CODE].empty?

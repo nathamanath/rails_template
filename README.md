@@ -8,6 +8,7 @@ A rails template to save time configuring rails at the start of every project.
 * RSpec and capybara setup with selenium, factory girl and database cleaner
 * Remove un-needed files (./test)
 * Set up dot env gem for development
+* Make database.yml portable using environment variables
 * Set up letter opener gem in development
 * Get rid of jQuery, ujs, and turbo links
 * Slim templating,
@@ -30,3 +31,5 @@ A rails template to save time configuring rails at the start of every project.
 * nicer management of Gemfile
 * rake task to update vendored assets
 * should have tests for all templated features
+* base sass mixins... center, media etc
+* some rails helpers... form validation errors, flash notificatins
