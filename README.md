@@ -10,7 +10,8 @@ A rails template to save time configuring rails at the start of every project.
 * Set up dot env gem for development
 * Set up letter opener gem in development
 * Get rid of jQuery, ujs, and turbo links
-* Slim templating
+* Slim templating,
+* layout/application.html.slim based on html5 bp
 * Setup a staging environment
 * Setup generators in application.rb
 * Setup database
@@ -19,12 +20,13 @@ A rails template to save time configuring rails at the start of every project.
 * Static pages controller
 * A smoke test
 * Modernizr gem in development (make a custom build for production)
+* Pick a database (pg, mysql, sqlite)
+
 
 ## Development
 
 ### TODO:
 
 * nicer management of Gemfile
-* pick a database. Currently postgres only
 * rake task to update vendored assets
-
+* should have tests for all templated features
