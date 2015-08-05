@@ -16,7 +16,7 @@ A rails template to save time configuring rails at the start of every project.
 * Setup a staging environment
 * Setup generators in application.rb
 * Setup database
-* Init git repo
+* Init git repo, handle initial commit, setup develop branch
 * Markdown readme
 * Static pages controller
 * A smoke test

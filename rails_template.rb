@@ -1,5 +1,4 @@
-# Prompt user to select db
-databases = {
+DATABASES = {
   mysql: {
     gem: 'mysql2',
     adapter: 'mysql2'
@@ -14,12 +13,15 @@ databases = {
   }
 }
 
-app_title = @app_name.titleize
+APP_TITLE = @app_name.titleize
 
-db = ''
-while !databases.map{ |k, v| k }.include?(db) do
+
+# Prompt user to select db
+db = nil
+while !DATABASES.map{ |k, v| k }.include?(db) do
   db = ask("Which database? type 'mysql', 'sqlite', or 'pg'?").to_sym
 end
+
 
 # gems
 remove_file 'Gemfile'
@@ -29,7 +31,7 @@ add_source 'https://rubygems.org'
 
 # Add some gems
 gem 'rails'
-gem databases[db][:gem]
+gem DATABASES[db][:gem]
 gem 'sass-rails'
 gem 'uglifier'
 gem 'puma'
@@ -84,9 +86,10 @@ run 'cp .env .env.sample'
 # Use environment variables to make database.yml portable
 remove_file 'config/database.yml'
 copy_file File.expand_path('../config/database.yml', __FILE__), 'config/database.yml'
-gsub_file 'config/database.yml', 'ADAPTER', databases[db][:adapter]
+gsub_file 'config/database.yml', 'ADAPTER', DATABASES[db][:adapter]
 
 gsub_file 'config/database.yml', /.*unicode\n/, '' unless db == :pg
+
 
 # Tidy up unwanted files
 run 'rm -r test'
@@ -94,7 +97,7 @@ run 'rm -r test'
 
 # Nice README
 run 'rm README.rdoc'
-run "echo '# #{app_title}\n' > README.md"
+run "echo '# #{APP_TITLE}\n\n' > README.md"
 
 
 # Layout
@@ -102,15 +105,16 @@ layout_dir = 'app/views/layouts/'
 layout_path = "#{layout_dir}application.html.slim"
 
 remove_file "#{layout_dir}application.html.erb"
-# copy_file File.expand_path("../#{layout_path}", __FILE__), layout_path
+
 directory File.expand_path("../#{layout_dir}", __FILE__), layout_dir
-gsub_file layout_path, /DEFAULT_TITLE/, app_title
+gsub_file layout_path, /DEFAULT_TITLE/, APP_TITLE
 
 
 # SASS
 remove_file 'app/assets/stylesheets/application.css'
 directory File.expand_path('../app/assets/stylesheets', __FILE__), 'app/assets/stylesheets'
 directory File.expand_path('../vendor', __FILE__), 'vendor'
+
 
 # JS
 gsub_file 'app/assets/javascripts/application.js', /^.*jquery.*\n/, ''
@@ -129,7 +133,6 @@ YML
 append_to_file 'config/secrets.yml', secrets
 
 
-# update application.rb
 # configure generators
 application do <<-RUBY
   config.sass_preferred_syntax = :sass
@@ -153,13 +156,14 @@ RUBY
 end
 
 
+# Everything dependent on bundle
 after_bundle do
   run 'spring stop'
 
-  generate 'rspec:install'
-
 
   # rspec
+  generate 'rspec:install'
+
   rspec = <<-RSPEC
   require 'pry'
 
@@ -178,8 +182,10 @@ after_bundle do
   end
   run 'mkdir spec/support'
 
+
   # factory girl
   copy_file File.expand_path('../spec/support/factory_girl.rb', __FILE__), 'spec/support/factory_girl.rb'
+
 
   # database cleaner
   copy_file File.expand_path('../spec/support/database_cleaner.rb', __FILE__), 'spec/support/database_cleaner.rb'
@@ -191,20 +197,21 @@ after_bundle do
   OPENER
   end
 
+  # Database setup
   rake 'db:create'
   rake 'db:migrate'
   rake 'db:test:prepare'
+
 
   # Static controller
   generate 'controller static index'
   route "root 'static#index'"
 
+
   # Smoke test
   directory File.expand_path('../spec/features', __FILE__), 'spec/features'
 
-  git :init
-  git add: '.'
-  git commit: '-a -m initial commit'
-  git checkout: '-b develop'
 
+  # Git
+  run 'git init && git add . && git commit -m "initial commit" && git checkout -b develop'
 end
