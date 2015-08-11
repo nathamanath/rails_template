@@ -22,6 +22,7 @@ A rails template to save time configuring rails at the start of every project.
 * A smoke test
 * Modernizr gem in development (make a custom build for production)
 * Pick a database (pg, mysql, sqlite)
+* Google analytics setup
 
 
 ## Development
