@@ -165,6 +165,7 @@ end
 
 # Everything dependent on bundle
 after_bundle do
+  # Spring broke rspec generator?!?!?!
   run 'spring stop'
 
 
