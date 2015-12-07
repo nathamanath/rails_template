@@ -122,6 +122,8 @@ remove_file 'app/assets/stylesheets/application.css'
 directory File.expand_path('../app/assets/stylesheets', __FILE__), 'app/assets/stylesheets'
 directory File.expand_path('../vendor', __FILE__), 'vendor'
 
+# helpers
+directory File.expand_path('../app/helpers', __FILE__), 'app/helpers'
 
 # JS
 gsub_file 'app/assets/javascripts/application.js', /^.*jquery.*\n/, ''
@@ -157,7 +159,7 @@ application do <<-RUBY
 
     g.stylesheets = false
     g.javascripts = false
-    g.helpers = false
+    g.helper = false
   end
 RUBY
 end

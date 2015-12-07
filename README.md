@@ -23,7 +23,8 @@ A rails template to save time configuring rails at the start of every project.
 * Modernizr gem in development (make a custom build for production)
 * Pick a database (pg, mysql, sqlite)
 * Google analytics setup
-
+* Some sass mixins... media query, center
+* Useful helpers
 
 ## Development
 
@@ -32,5 +33,3 @@ A rails template to save time configuring rails at the start of every project.
 * nicer management of Gemfile
 * rake task to update vendored assets
 * should have tests for all templated features
-* base sass mixins... center, media etc
-* some rails helpers... form validation errors, flash notificatins
