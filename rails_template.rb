@@ -18,10 +18,17 @@ APP_TITLE = @app_name.titleize
 
 # Prompt user to select db
 db = nil
+db_user = nil
+db_pass = nil
+
 while !DATABASES.map{ |k, v| k }.include?(db) do
   db = ask("Which database? type 'mysql', 'sqlite', or 'pg'?").to_sym
 end
 
+if db != :sqlite
+  db_user = ask("Database username:")
+  db_pass = ask("Database password:")
+end
 
 # gems
 remove_file 'Gemfile'
@@ -73,8 +80,8 @@ database_name = (db == :sqlite)? 'db/development.sqlite3' : "#{@app_name.undersc
 
 env = <<-ENV
 DATABASE_NAME=#{database_name}_development
-DATABASE_USERNAME=
-DATABASE_PASSWORD=
+DATABASE_USERNAME=#{db_user}
+DATABASE_PASSWORD=#{db_pass}
 ANALYTICS_TRACKING_CODE=
 ENV
 
