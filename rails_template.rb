@@ -44,12 +44,11 @@ gem 'uglifier'
 gem 'puma'
 gem 'bourbon'
 gem 'slim-rails'
-gem 'therubyracer'
 
 gem_group :development, :test do
+  gem 'listen'
   gem 'byebug'
   gem 'rspec-rails'
-  gem 'web-console'
   gem 'spring'
   gem 'pry'
   gem 'letter_opener'
@@ -62,6 +61,10 @@ gem_group :development, :test do
   gem 'capybara'
   gem 'dotenv-rails'
   gem 'modernizr-rails'
+end
+
+gem_group development do
+  gem 'web-console'
 end
 
 gem_group :production, :staging do
@@ -172,7 +175,7 @@ after_bundle do
 
 
   # rspec
-  generate 'rspec:install'
+  run 'bundle exec rails g rspec:install'
 
   rspec = <<-RSPEC
   require 'pry'
