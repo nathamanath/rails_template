@@ -61,9 +61,10 @@ gem_group :development, :test do
   gem 'capybara'
   gem 'dotenv-rails'
   gem 'modernizr-rails'
+  gem 'binding-of-caller'
 end
 
-gem_group development do
+gem_group :development do
   gem 'web-console'
 end
 
